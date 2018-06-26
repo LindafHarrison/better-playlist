@@ -130,32 +130,39 @@ class App extends Component {
     let playlistToRender =
       this.state.user &&
         this.state.playlists
-        ? this.state.playlists.filter(playlist =>
-          playlist.name.toLowerCase().includes(
-            this.state.filterString.toLowerCase()))
-        : []
+        ? this.state.playlists.filter(playlist => {
+          let matchesPlaylist = playlist.name.toLowerCase().includes(
+            this.state.filterString.toLowerCase()
+          )
+          let matchesSong = playlist.songs.filter(song => song.name.toLowerCase().includes(
+            this.state.filterString.toLowerCase())
+          )
+          console.log(matchesSong)
+          return matchesPlaylist || matchesSong.length > 0
+        }) : []
 
     return (
-      <div className="App">
-        {this.state.user
-          ? <div>
-            <h1 style={{ ...defaultStyle, 'fontSize': '54px' }}>
-              {this.state.user.name}'s Playlist
+      <div className="App" >
+        {
+          this.state.user
+            ? <div>
+              <h1 style={{ ...defaultStyle, 'fontSize': '54px' }}>
+                {this.state.user.name}'s Playlist
             </h1>
-            <PlaylistCounter playlists={playlistToRender} />
-            <HoursCounter playlists={playlistToRender} />
-            <Filter onTextChange={text => this.setState({ filterString: text })} />
-            {playlistToRender.map(playlist =>
-              <Playlist playlist={playlist} />
-            )}
-          </div>
-          : <button onClick={() => {
-            window.location = window.location.href.includes('localhost')
-              ? 'http://localhost:8888/login'
-              : 'https://filtered-playlists-backend.herokuapp.com/login'
-          }
-          }
-            style={{ padding: '20px', 'fontSize': '90px', 'marginTop': '20px' }}>Sign in with Spotify</button>
+              <PlaylistCounter playlists={playlistToRender} />
+              <HoursCounter playlists={playlistToRender} />
+              <Filter onTextChange={text => this.setState({ filterString: text })} />
+              {playlistToRender.map(playlist =>
+                <Playlist playlist={playlist} />
+              )}
+            </div>
+            : <button onClick={() => {
+              window.location = window.location.href.includes('localhost')
+                ? 'http://localhost:8888/login'
+                : 'https://filtered-playlists-backend.herokuapp.com/login'
+            }
+            }
+              style={{ padding: '20px', 'fontSize': '90px', 'marginTop': '20px' }}>Sign in with Spotify</button>
         }
       </div>
     );
