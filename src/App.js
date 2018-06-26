@@ -46,15 +46,32 @@ class Filter extends Component {
 
 class Playlist extends Component {
   render() {
+
     const playlist = this.props.playlist
+    let matches;
+    playlist.name.toLowerCase().includes(this.props.filterString.toLowerCase())
+      ? matches = playlist.songs
+      : matches = playlist.songs.filter(song => {
+
+        let matchesSong = song.name.toLowerCase().includes(
+          this.props.filterString.toLowerCase()
+        )
+
+        let matchesArtist = song.artist.toLowerCase().includes(
+          this.props.filterString.toLowerCase()
+        )
+
+        return matchesSong || matchesArtist
+      })
+
     return (
       <div style={{ ...defaultStyle, display: "inline-block", width: "25%" }}>
         <img src={playlist.imageUrl} style={{ width: "100px" }} />
         <h3> {playlist.name} </h3>
         <ul>
           {
-            playlist.songs.map(song =>
-              <li> {song.name} </li>
+            matches.slice(0, 3).map(song =>
+              <li> {song.name} - {song.artist} </li>
             )
           }
         </ul>
@@ -105,6 +122,7 @@ class App extends Component {
             playlists[i].trackDatas = trackData.items
               .map(item => item.track)
               .map(trackData => ({
+                artist: trackData.artists[0].name,
                 name: trackData.name,
                 duration: trackData.duration_ms / 1000
               }))
@@ -118,7 +136,7 @@ class App extends Component {
           return {
             name: item.name,
             imageUrl: item.images[0].url,
-            songs: item.trackDatas.slice(0, 3)
+            songs: item.trackDatas
           }
         })
       }))
@@ -137,8 +155,10 @@ class App extends Component {
           let matchesSong = playlist.songs.filter(song => song.name.toLowerCase().includes(
             this.state.filterString.toLowerCase())
           )
-          console.log(matchesSong)
-          return matchesPlaylist || matchesSong.length > 0
+          let matchesArtist = playlist.songs.filter(song => song.artist.toLowerCase().includes(
+            this.state.filterString.toLowerCase())
+          )
+          return matchesPlaylist || matchesSong.length > 0 || matchesArtist.length > 0
         }) : []
 
     return (
@@ -153,7 +173,7 @@ class App extends Component {
               <HoursCounter playlists={playlistToRender} />
               <Filter onTextChange={text => this.setState({ filterString: text })} />
               {playlistToRender.map(playlist =>
-                <Playlist playlist={playlist} />
+                <Playlist filterString={this.state.filterString} playlist={playlist} />
               )}
             </div>
             : <button onClick={() => {
