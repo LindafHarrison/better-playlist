@@ -111,8 +111,8 @@ class App extends Component {
 
     return (
       <div className="App">
-        {this.state.user ?
-          <div>
+        {this.state.user
+          ? <div>
             <h1 style={{ ...defaultStyle, 'fontSize': '54px' }}>
               {this.state.user.name}'s Playlist
             </h1>
@@ -126,7 +126,7 @@ class App extends Component {
           : <button onClick={() => {
             window.location = window.location.href.includes('localhost')
               ? 'http://localhost:8888/login'
-              : 'https://better-spotify-playlists.herokuapp.com/login'
+              : 'https://filtered-playlists-backend.herokuapp.com/login'
           }
           }
             style={{ padding: '20px', 'fontSize': '90px', 'marginTop': '20px' }}>Sign in with Spotify</button>
