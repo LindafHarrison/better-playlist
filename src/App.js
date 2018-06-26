@@ -88,14 +88,40 @@ class App extends Component {
     fetch('https://api.spotify.com/v1/me/playlists', {
       headers: { 'Authorization': 'Bearer ' + accessToken }
     }).then((res) => res.json())
-      .then(data =>
-        this.setState({
-          playlists: data.items.map(item => ({
+      .then(playlistData => {
+        let playlists = playlistData.items
+        let trackDataPromises = playlists.map(playlist => {
+          let responsePromise = fetch(playlist.tracks.href, {
+            headers: { 'Authorization': 'Bearer ' + accessToken }
+          })
+          let trackDataPromise = responsePromise
+            .then(res => res.json())
+          return trackDataPromise
+        })
+        let allTracksDatasPromises =
+          Promise.all(trackDataPromises)
+        let playlistsPromise = allTracksDatasPromises.then(trackDatas => {
+          trackDatas.forEach((trackData, i) => {
+            playlists[i].trackDatas = trackData.items
+              .map(item => item.track)
+              .map(trackData => ({
+                name: trackData.name,
+                duration: trackData.duration_ms / 1000
+              }))
+          })
+          return playlists
+        })
+        return playlistsPromise
+      })
+      .then(playlists => this.setState({
+        playlists: playlists.map(item => {
+          return {
             name: item.name,
             imageUrl: item.images[0].url,
-            songs: []
-          }))
-        }))
+            songs: item.trackDatas.slice(0, 3)
+          }
+        })
+      }))
 
   }
 
