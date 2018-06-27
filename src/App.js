@@ -62,7 +62,8 @@ class Filter extends Component {
           ...defaultStyle,
           color: 'black',
           'font-size': '20px'
-        }} type='text' onKeyUp={event => this.props.onTextChange(event.target.value)} />
+        }} placeholder="Filter" type='text'
+          onKeyUp={event => this.props.onTextChange(event.target.value)} />
       </div>
     );
   }
