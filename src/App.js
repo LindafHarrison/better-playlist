@@ -92,7 +92,7 @@ class Playlist extends Component {
       <div style={{
         ...defaultStyle,
         display: "inline-block",
-        width: "25%",
+        width: "23%",
         'vertical-align': 'top'
       }}>
         <img src={playlist.imageUrl} style={{
