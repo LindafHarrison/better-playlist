@@ -92,6 +92,7 @@ class Playlist extends Component {
     return (
       <div style={{
         ...defaultStyle,
+        'text-align': 'center',
         display: "inline-block",
         width: "23%",
         'vertical-align': 'top'
@@ -113,7 +114,7 @@ class Playlist extends Component {
                 color: '#D7DBDD',
                 'font-size': '16px',
                 'line-height': '1.5'
-              }}> {song.name} - {song.artist} </li>
+              }}> {song.name} </li>
             )
           }
         </ul>
